@@ -1,0 +1,25 @@
+# Dossier de build
+build/
+**/build/
+
+# SFML
+external/SFML-2.6.2
+
+# Fichier spécifique
+setup_struct.bat
+
+# Autres fichiers courants à ignorer
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.userprefs
+*.sln.docstates
+*.obj
+*.exe
+*.pdb
+*.dll
+*.ilk
+*.log
+*.tlog
