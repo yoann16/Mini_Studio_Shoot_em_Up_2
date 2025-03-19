@@ -23,17 +23,19 @@ target_link_libraries(Game_Launcher PUBLIC
 # Organiser dans Visual Studio
 source_group("Source Files" FILES ${LAUNCHER_SOURCE_FILES})
 
-# Copier les DLL de SFML à côté de l'exécutable après la compilation
+set(SFML_BIN_DIR "${CMAKE_SOURCE_DIR}/external/SFML-2.6.2/bin" CACHE PATH "SFML binary directory")
+
 add_custom_command(TARGET Game_Launcher POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-    "${CMAKE_SOURCE_DIR}/external/SFML-2.6.2/bin"
+    "${SFML_BIN_DIR}"
     $<TARGET_FILE_DIR:Game_Launcher>
     COMMENT "Copie des DLL SFML vers le dossier de l'exécutable"
 )
-# Ajouter cette commande à Game_Launcher/CMakeLists.txt
+set(RESOURCES_DIR "${CMAKE_SOURCE_DIR}/Ressources" CACHE PATH "Resources directory")
+
 add_custom_command(TARGET Game_Launcher POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-    "${CMAKE_SOURCE_DIR}/Ressources"
+    "${RESOURCES_DIR}"
     $<TARGET_FILE_DIR:Game_Launcher>/Ressources
     COMMENT "Copie des ressources vers le dossier de l'exécutable"
 )

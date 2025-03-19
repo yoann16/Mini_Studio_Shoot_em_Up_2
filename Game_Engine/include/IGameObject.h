@@ -102,7 +102,7 @@ public:
 	ILeaf(IComposite* parent);
 
 	virtual void Update(const float& deltatime) = 0;
-	virtual void ProssesInput(const sf::Event& event) = 0;
+	virtual void ProcessInput(const sf::Event& event) = 0;
 	virtual void Render() = 0;
 
 	Component GetComponentType() override
@@ -131,8 +131,10 @@ public:
 	virtual void Render() = 0;
 	virtual AABB GetBoundingBox();
 	IShapeSFML* getShape();
+	IShapeSFML* getShape() const;
 	virtual GameObjectType globalGameObjectType() = 0;
 	virtual void HandleCollision(IGameObject* object){}
+	virtual float sorting_Y_point() const = 0;
 	bool NeedDestroy();
 
 	void destroy();

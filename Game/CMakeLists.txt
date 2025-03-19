@@ -12,9 +12,7 @@ target_include_directories(Game PUBLIC
     ${SFML_INCLUDE_DIR}
 )
 
-# Lier Game_Engine et SFML
-# Note: Game_Engine est déjà lié à KT_Library, donc Game y a accès indirectement
-# Si vous avez besoin d'un accès direct, ajoutez KT_Library ici aussi
+
 target_link_libraries(Game PUBLIC 
     Game_Engine
     sfml-graphics

@@ -153,6 +153,13 @@ sf::Vector2f RectangleSFML::getCenter()
 	return m_shape.getOrigin();
 }
 
+//Débug:
+void RectangleSFML::setFillColor(const sf::Color& color) { m_shape.setFillColor(color); };
+void RectangleSFML::setOutlineColor(const sf::Color& color) { m_shape.setOutlineColor(color); };
+void RectangleSFML::setOutlineThickness(float thickness) { m_shape.setOutlineThickness(thickness); };
+//void RectangleSFML::setTexture(const sf::Texture* texture, bool resetRect = false) { m_shape.setTexture(texture, resetRect); };
+//void RectangleSFML::setTextureRect(const sf::IntRect& rect) { m_shape.setTextureRect(rect); }
+
 
 
 SquareSFML::SquareSFML(float size, sf::Vector2f position, sf::Vector2f Origin) :RectangleSFML(size, size, position, Origin)

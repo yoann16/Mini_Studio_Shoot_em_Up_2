@@ -16,7 +16,7 @@ target_link_libraries(Game_Engine PUBLIC
     sfml-graphics
     sfml-window
     sfml-system
-    KT_Library  # Ajouter la bibliothèque mathématique ici
+    KT_Library  
 )
 
 # Organiser dans Visual Studio

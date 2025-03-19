@@ -49,6 +49,13 @@ public:
 	virtual sf::Vector2f getCenter() = 0;
 
 	virtual AABB GetBoundingBox() = 0;
+
+	//Débug:
+	virtual void setFillColor(const sf::Color& color) = 0;
+	virtual void setOutlineColor(const sf::Color& color) = 0;
+	virtual void setOutlineThickness(float thickness) = 0;
+	/*virtual void setTexture(const sf::Texture* texture, bool resetRect = false) = 0;
+	virtual void setTextureRect(const sf::IntRect& rect) = 0;*/
 };
 class RectangleSFML : public IShapeSFML
 {
@@ -79,6 +86,13 @@ public:
 	sf::Shape& getShape() override;
 
 	 AABB GetBoundingBox()override;
+
+	 //Débug:
+	 void setFillColor(const sf::Color& color) override;
+	 void setOutlineColor(const sf::Color& color) override;
+	 void setOutlineThickness(float thickness) override;
+	 /*void setTexture(const sf::Texture* texture, bool resetRect = false) override;
+	 void setTextureRect(const sf::IntRect& rect) override;*/
 
 protected:
 	sf::RectangleShape m_shape;
