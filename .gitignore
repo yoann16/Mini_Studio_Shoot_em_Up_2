@@ -1,59 +1,9 @@
-# Dossier de build
+# Dossiers à exclure
 build/
-**/build/
-
-# SFML spécifique (tout en gardant la structure actuelle)
-external/SFML-2.6.2
-
-# Fichier spécifique
-setup_struct.bat
-
-# Fichiers générés par CMake
-CMakeFiles/
-CMakeCache.txt
-cmake_install.cmake
-compile_commands.json
-
-# Fichiers compilés et temporaires
-*.o
-*.obj
-*.exe
-*.out
-*.app
-*.dll
-*.so
-*.dylib
-*.a
-*.lib
-*.pdb
-*.ilk
-*.log
-*.tlog
-
-# Environnements de développement
-.vs/
-.vscode/
-.idea/
-*.user
-*.suo
-*.userprefs
-*.sln.docstates
+vcpkg/
+cmake/
 
 # Fichiers spécifiques au projet
 Document/Diagramme UML/*.txt
 Document/S2 - UE4 - Gestion de projet-20250308T194006Z-001.zip
-Game/include/BehaviorTree.h
-Game/include/Boss.h
-Game/include/BossBehavior.h
-Game/include/BossBullet.h
-Game/include/Collision.h
-Game/include/ISpawner.h
-Game/include/Ship.h
-Game/src/BehaviorTree.cpp
-.gitignore
-Game/src/BossBehavior.cpp
-Game/src/BossBullet.cpp
-Game/src/Collision.cpp
-Game/src/ISpawner.cpp
-Game/src/Boss.cpp
-Game/src/Ship.cpp
+external/SFML-2.6.2/
