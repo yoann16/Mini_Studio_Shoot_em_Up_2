@@ -1,0 +1,44 @@
+# Dossier de build
+build/
+**/build/
+
+# SFML spécifique (tout en gardant la structure actuelle)
+external/SFML-2.6.2
+
+# Fichier spécifique
+setup_struct.bat
+
+# Fichiers générés par CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+
+# Fichiers compilés et temporaires
+*.o
+*.obj
+*.exe
+*.out
+*.app
+*.dll
+*.so
+*.dylib
+*.a
+*.lib
+*.pdb
+*.ilk
+*.log
+*.tlog
+
+# Environnements de développement
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.userprefs
+*.sln.docstates
+
+# Fichiers spécifiques au projet
+Document/Diagramme UML/*.txt
+Document/S2 - UE4 - Gestion de projet-20250308T194006Z-001.zip
