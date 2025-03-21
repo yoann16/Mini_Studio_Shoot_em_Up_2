@@ -5,7 +5,7 @@
 #include "KT_Math_Algorithm.h"
 #include "KT_Array.h"
 #include "KT_VectorND.h"
-#include "Game.h"
+//#include "Game.h"
 #include <iostream>
 #include <random>
 
@@ -83,17 +83,27 @@ public:
 		,IComposite(layer)
 		, m_layer(layer)
 		, m_velocity( 270.0f)
+		, m_isActive(true)
 	{
 		ISceneBase* layerScene = layer->getRoot()->getScene();
 		
 		m_shape = new RectangleSFML(48,48, position);
 		m_shape->setTexture(layerScene->getTexture()->getTexture("Nova.png"));
 		m_direction = { 0.0f,0.0f };
+		m_isActive = true;
 	}
 	~Player() = default;
 	float sorting_Y_point() const override
 	{
 		return  m_shape->getPosition().y + m_shape->getSize().y;
+	}
+	/*sf::Vector2f getPreviousPosition() const
+	{
+		 return m_previousPosition;
+	}*/
+	void setdirection(const sf::Vector2f& direction)
+	{
+		m_direction= direction;
 	}
 	void ProcessInput(const sf::Event& event) override
 	{
@@ -150,8 +160,10 @@ public:
 	}
 	void Update(const float& deltatime) override
 	{
+		//m_previousPosition = m_shape->getPosition();
 		sf::Vector2f movement = m_velocity * m_direction * deltatime;
 		m_shape->setPosition(m_shape->getPosition() + movement);
+		m_layer->setNeedSort(true);
 	}
 	void Render() override
 	{
@@ -182,6 +194,7 @@ private:
 	float m_velocity;
 	sf::Vector2f m_direction;
 	bool m_isActive;
+	//sf::Vector2f m_previousPosition;
 };
 
 enum class ZombieClassicState
@@ -294,9 +307,9 @@ public:
 			case ZombieClassicState::IDLE:
 				UpdateIDLEState(deltatime);
 				break;
-			case ZombieClassicState::FOLLOW:
+			/*case ZombieClassicState::FOLLOW:
 				UpdateFOLLOWState(deltatime);
-				break;
+				break;*/
 			default:
 				break;
 			}
@@ -309,6 +322,23 @@ public:
 		if (m_isActive == true)
 		{
 			m_layer->getRoot()->getScene()->getWindow()->draw(m_shape->getShape());
+
+			RectangleSFML boundingBox(m_shape->getSize().x, m_shape->getSize().y, m_shape->getPosition());
+			boundingBox.setFillColor(sf::Color::Transparent);
+			boundingBox.setOutlineThickness(2);
+			boundingBox.setOutlineColor(sf::Color::Green);
+
+
+			m_layer->getRoot()->getScene()->getWindow()->draw(boundingBox.getShape());
+
+
+			sf::CircleShape debugPoint(5);
+			debugPoint.setFillColor(sf::Color::Red);
+			sf::Vector2f anchor_point = { m_shape->getPosition().x - 5 ,m_shape->getPosition().y + 15 };
+			debugPoint.setPosition(anchor_point);
+
+
+			m_layer->getRoot()->getScene()->getWindow()->draw(debugPoint);
 		}
 	}
 
@@ -338,9 +368,9 @@ private:
 		}
 		else
 		{
-			if (m_timeState = 5.0f)
+			if (m_timeState >= 5.0f)
 			{
-				ZombieClassicState::PROWLING;
+				m_currentState = ZombieClassicState::PROWLING;
 			}
 		}
 	}
@@ -381,7 +411,7 @@ private:
 		if (m_timeState >= 3.0f)
 		{
 			std::cout << "m_timeState IDLE: " << m_timeState << std::endl;
-			ZombieClassicState::PROWLING;
+			m_currentState = ZombieClassicState::PROWLING;
 			m_timeState = 0;
 		}
 	}
@@ -390,42 +420,64 @@ private:
 	{
 		std::cout << "deltatime PROWLING: " << deltatime << std::endl;
 		m_timeState += deltatime;
-		m_direction = m_patrolPoints.at(m_currentPatrolPoint) - m_shape->getPosition();
-		float distance = std::sqrt(m_direction.x * m_direction.x + m_direction.y * m_direction.y); 
+
+		
+		sf::Vector2f PatrolPoint = m_patrolPoints.at(m_currentPatrolPoint);
+		sf::Vector2f currentPosition = m_shape->getPosition();
+
+		
+		sf::Vector2f directionToPatrolPoint = PatrolPoint - currentPosition;
+		float distanceToPatrolPoint = std::sqrt(directionToPatrolPoint.x * directionToPatrolPoint.x +
+			directionToPatrolPoint.y * directionToPatrolPoint.y);
+
+		
 		if (m_targetPlayer)
 		{
 			sf::Vector2f playerPosition = m_targetPlayer->getShape()->getPosition();
-			sf::Vector2f zombiePosition = m_shape->getPosition();
+			float distanceToPlayer = std::sqrt(std::pow(playerPosition.x - currentPosition.x, 2) +
+				std::pow(playerPosition.y - currentPosition.y, 2));
 
-			sf::Vector2f directionToPlayer = playerPosition - zombiePosition;
-			float distanceToPlayer = std::sqrt(directionToPlayer.x * directionToPlayer.x
-												+ directionToPlayer.y * directionToPlayer.y
-			                                  );
 			if (distanceToPlayer < 200.0f)
 			{
 				m_currentState = ZombieClassicState::FOLLOW;
 				m_timeState = 0.0f;
+				m_direction = { 0.0f, 0.0f };
 				return;
 			}
 		}
-		if (distance < 10.0f) 
+
+		
+		if (distanceToPatrolPoint < 10.0f)
 		{
-			if (m_distribution(m_generator)) 
+			
+			m_direction = { 0.0f, 0.0f };
+
+			if (m_distribution(m_generator))
 			{
+				
 				m_currentState = ZombieClassicState::IDLE;
 				m_timeState = 0.0f;
 			}
 			else
 			{
+				
 				m_currentPatrolPoint = (m_currentPatrolPoint + 1) % m_patrolPoints.size();
 			}
-			
 		}
-		if (distance > 0) 
+		else
 		{
-			m_direction.x /= distance;
-			m_direction.y /= distance;
+			
+			m_direction = 
+			{
+				directionToPatrolPoint.x / distanceToPatrolPoint,
+				directionToPatrolPoint.y / distanceToPatrolPoint
+			};
 		}
+
+		
+		std::cout << "Patrol Point: " << m_currentPatrolPoint
+			<< ", Distance: " << distanceToPatrolPoint
+			<< ", Direction: (" << m_direction.x << ", " << m_direction.y << ")" << std::endl;
 	}
 };
 
@@ -483,6 +535,9 @@ public:
 
 		m_layer->getRoot()->getScene()->getWindow()->draw(boundingBox.getShape());
 
+
+		m_layer->getRoot()->getScene()->getWindow()->draw(boundingBox.getShape());
+
 		// Créer un point de débogage local
 		sf::CircleShape debugPoint(5);
 		debugPoint.setFillColor(sf::Color::Red);
@@ -519,7 +574,7 @@ public:
 
 	float sorting_Y_point() const override
 	{
-		return m_shape->getPosition().y + m_shape->getSize().y;
+		return std::numeric_limits<float>::max();
 	}
 
 	void ProcessInput(const sf::Event& event) override

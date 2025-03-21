@@ -33,6 +33,8 @@ private:
     std::vector<Layer*> m_layer;
     Player* m_player;
     Terrain* m_terrain;
+    TreeTrunk* m_treetrunk;
+    ZombieSeed* m_zombie;
     /*PhysicsSystem& m_physics;
     std::vector<Platform> m_platforms;
     std::vector<Enemy> m_enemies;

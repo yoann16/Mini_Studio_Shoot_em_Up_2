@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "Collision.h"
 
 
 Game::Game(sf::RenderWindow* Window, const float& framerate, TextureCache* TextureManager)
@@ -15,28 +16,38 @@ Game::Game(sf::RenderWindow* Window, const float& framerate, TextureCache* Textu
         Window->getSize().y / 2.0f
     );
     const sf::Vector2f treePosition =  sf::Vector2f(300.0f, 500.0f);
+    const sf::Vector2f patrol =  sf::Vector2f(windowCenter.x, windowCenter.y - 300.0f);
+
 
     m_terrain = new Terrain(m_backgroundLayer, windowCenter);
     m_player = new Player(m_middlegroundLayer, 10.0f, windowCenter);
     m_treetrunk = new TreeTrunk(m_middlegroundLayer, treePosition);
-    m_treeleave = new TreeLeave(m_foregroundLayer, treePosition);
+    m_zombie = new ZombieSeed(m_middlegroundLayer, 10.f, patrol);
+   auto  m_treeleave = new TreeLeave(m_foregroundLayer, treePosition);
     
 
     m_backgroundLayer->AddGameObject(m_terrain);
     m_middlegroundLayer->AddGameObject(m_player);
     m_middlegroundLayer->AddGameObject(m_treetrunk);
-    m_foregroundLayer->AddGameObject(m_treeleave);
+    m_middlegroundLayer->AddGameObject(m_zombie);
+    m_middlegroundLayer->AddGameObject(m_treeleave);
+    ////m_gameObject.push_back(m_terrain);
+    //m_gameObject.push_back(m_player);
+    //m_gameObject.push_back(m_treetrunk);
+    //m_gameObject.push_back(m_treeleave);
 
-
+    m_zombie->SetTargetPlayer(m_player);
 }
-//Game::~Game()
-//{
-//    delete m_backgroundLayer;
-//    delete m_middlegroundLayer;
-//    delete m_foregroundLayer;
-//    delete m_terrain;
-//    delete m_player;
-//}
+
+Game::~Game()
+{
+    delete m_backgroundLayer;
+    delete m_middlegroundLayer;
+    delete m_foregroundLayer;
+    /*delete m_terrain;
+    delete m_player;*/
+}
+
 void Game::ProcessInput(const sf::Event& event) 
 {
     if (event.type == sf::Event::KeyPressed)
@@ -51,7 +62,10 @@ void Game::ProcessInput(const sf::Event& event)
         }
 
     }
-    m_player->ProcessInput(event);
+    if (m_player)
+    {
+        m_player->ProcessInput(event);
+    }
 
 }
 void Game::Update(const float& deltatime) 
@@ -61,10 +75,51 @@ void Game::Update(const float& deltatime)
     {
     case GameState::playing:
     {
+        sf::Vector2f previousPosition;
+        if (m_player != nullptr && m_treetrunk != nullptr && m_zombie != nullptr)
+        {
+            sf::Vector2f previousPosition = m_player->getShape()->getPosition();
+            m_player->Update(deltatime);
+            m_zombie->Update(deltatime);
 
-        m_player->Update(deltatime);
+            AABB playerBox = m_player->getShape()->GetBoundingBox();
+            AABB treeBox = m_treetrunk->getShape()->GetBoundingBox();
+
+            if (CheckCollsion(playerBox, treeBox))
+            {
+                
+                m_player->getShape()->setPosition(previousPosition);
+
+                
+                m_player->setdirection({ 0.0f, 0.0f });
+            }
+        }
+        /*if (m_zombie)
+        {
+
+            m_zombie->Update(deltatime);
+        }
+        
+        if (m_player != nullptr && m_treetrunk != nullptr && m_zombie != nullptr)
+        {
+            AABB playerBox = m_player->getShape()->GetBoundingBox();
+            AABB treeBox = m_treetrunk->getShape()->GetBoundingBox();
+            AABB zombie = m_zombie->getShape()->GetBoundingBox();
+
+            if (CheckCollsion(playerBox, treeBox)) 
+            {
+                std::cout << "Collision détectée!" << std::endl;
+                std::cout << "Player: (" << playerBox.Amin.x << "," << playerBox.Amin.y << ") - ("
+                    << playerBox.Amax.x << "," << playerBox.Amax.y << ")" << std::endl;
+                std::cout << "Tree: (" << treeBox.Amin.x << "," << treeBox.Amin.y << ") - ("
+                    << treeBox.Amax.x << "," << treeBox.Amax.y << ")" << std::endl;
+                m_player->getShape()->setPosition(previousPosition);
+            }
+        }*/
+
+
+
         break;
-
     }
     case GameState::paused:
     {
