@@ -16,7 +16,7 @@ float convertDegToRad(const float& deg)
 	return (deg * 3.14159f) / 180;
 }
 
-IGameObject::IGameObject(IComposite* scene):m_scene(scene),m_needDestroy(false)
+IGameObject::IGameObject(IComposite* scene):m_scene(scene),m_needDestroy(false), m_sprite(nullptr)
 {
 
 }
@@ -24,6 +24,10 @@ IGameObject::IGameObject(IComposite* scene):m_scene(scene),m_needDestroy(false)
 IGameObject::~IGameObject()
 {
 	delete m_shape;
+	if (m_sprite != nullptr) 
+	{
+		delete m_sprite;
+	}
 }
 
 AABB IGameObject::GetBoundingBox()
@@ -32,6 +36,10 @@ AABB IGameObject::GetBoundingBox()
 }
 
 IShapeSFML* IGameObject::getShape()
+{
+	return m_shape;
+}
+IShapeSFML* IGameObject::getShape() const
 {
 	return m_shape;
 }
@@ -47,7 +55,9 @@ void IGameObject::destroy()
 }
 
 
-DestructibleObject::DestructibleObject(IComposite* scene, const float& life) :IGameObject(scene), m_life(life)
+DestructibleObject::DestructibleObject(IComposite* scene, const float& life) 
+	:IGameObject(scene)
+	, m_life(life)
 {
 }
 
@@ -192,7 +202,9 @@ void IComposite::remove(IComponent* data)
 	m_children.erase(it);
 }
 
-RootScene::RootScene(ISceneBase* scene):IComposite(nullptr),m_scene(scene)
+RootScene::RootScene(ISceneBase* scene)
+	:IComposite(nullptr)
+	,m_scene(scene)
 {
 
 }

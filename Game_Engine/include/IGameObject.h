@@ -2,7 +2,7 @@
 #include <KT_Vector.h>
 #include "IGameObject.h"
 #include "IGameObject.h"
-#include "SFML/Graphics.hpp"
+#include <SFML/Graphics.hpp>
 
 struct AABB
 {
@@ -142,6 +142,7 @@ public:
 protected:
 	IComposite* m_scene;
 	IShapeSFML* m_shape;
+	sf::Sprite* m_sprite;
 private:
 	bool m_needDestroy;
 };

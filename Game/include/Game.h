@@ -2,7 +2,9 @@
 #include "SceneBase.h"
 #include "GameObject.h"
 #include "Layer.h"
-class ISceneBase;
+#include <vector>
+
+//class ISceneBase;
 enum class GameState
 {
     playing
@@ -13,24 +15,24 @@ class Game : public ISceneBase
 {
 public:
     Game(sf::RenderWindow* Window, const float& framerate, TextureCache* TextureManager);
-    virtual~Game()=default;
+    virtual~Game();
     void ProcessInput(const sf::Event& event) override;
     void Update(const float& deltatime) override;
     void Render() override;
+    void AddLayer(Layer* layer) override{}
+    void RemoveLayer(Layer* layer) override{}
+    void ClearListLayer() override{}
+    std::vector<Layer*>& GetListLayer() override { return m_layer; }
+    const std::vector<Layer*>& GetListLayer() const override { return m_layer; }
 
-private:
-    /*void InitializeLevel();
-    void UpdateCamera();
-    void HandleGameLogic();*/
 private:
     GameState m_gameState;
     Layer* m_backgroundLayer;
     Layer* m_middlegroundLayer;
     Layer* m_foregroundLayer;
-    Terrain* m_terrain;
+    std::vector<Layer*> m_layer;
     Player* m_player;
-    TreeTrunk* m_treetrunk;
-    TreeLeave* m_treeleave;
+    Terrain* m_terrain;
     /*PhysicsSystem& m_physics;
     std::vector<Platform> m_platforms;
     std::vector<Enemy> m_enemies;

@@ -8,19 +8,11 @@ enum class LayersType
 	,Foreground
 };
 
-class Layer :public ILeaf
+class Layer :public IComposite
 {
 public:
-	Layer(ISceneBase* scene, LayersType type, int zIndex)
-		:ILeaf(scene)
-		, m_type(type)
-		, m_zIndex(zIndex)
-		, m_isVisible(true)
-		, m_opacity(1.0f)
-		, m_needsSort(false)
-		, m_sortedGameObjects()
-	{ }
-	virtual ~Layer()=default;
+	Layer(IComposite* scene, LayersType type, const int& zPosition);
+	virtual ~Layer();
 
 	
 	void Update(const float& deltatime) override;
@@ -34,27 +26,26 @@ public:
 	void SetOpacity(float opacity);
 	float GetOpacity() const;
 
-	void SetZIndex(int zIndex);
-	int GetZIndex() const;
+	void SetzPosition(int zPosition);
+	int GetzPosition() const;
 
 	LayersType GetLayerType() const;
 
-	
-	void SortByY();
-
 	void AddGameObject(IGameObject* GameObject);
 	void RemoveGameObject(IGameObject* GameObject);
-	KT::Vector<IGameObject*>& GetListGameObject();
-	const KT::Vector<IGameObject*>& GetListGameObject() const;
+	void ClearListGameObject();
+	std::vector<IGameObject*>& GetListGameObject();
+	const std::vector<IGameObject*>& GetListGameObject() const;
 
-	void setNeedsSort(bool neeedSort);
+	void setNeedSort(bool needsSort);
+	void SortByY();
 	
 private:
+	//ISceneBase* m_scene;
 	LayersType m_type;
-	KT::Vector<IGameObject*> m_sortedGameObjects;
-	int m_zIndex;
+	int m_zPosition;
 	bool m_isVisible;
 	float m_opacity;
 	bool m_needsSort;
-
+	std::vector<IGameObject*> m_GameObjects;
 };

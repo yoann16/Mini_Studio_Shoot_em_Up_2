@@ -2,13 +2,13 @@
 #include "IGameObject.h"
 #include"IShape.h"
 
-ISceneBase::ISceneBase(sf::RenderWindow* window, const float& framerate, TextureCache* texture) :
-RootScene(this),
-m_Window(window)
-, m_FefreshTime(sf::seconds(1.f /framerate))
-, m_Sceneidx(0)
-,m_Background(nullptr)
-, m_texture(texture)
+ISceneBase::ISceneBase(sf::RenderWindow* window, const float& framerate, TextureCache* texture) 
+	:RootScene(this)
+	,m_Window(window)
+	, m_FefreshTime(sf::seconds(1.f /framerate))
+	, m_Sceneidx(0)
+	,m_Background(nullptr)
+	, m_texture(texture)
 {
 }
 

@@ -4,6 +4,7 @@
 #include "IGameObject.h"
 #include "IShape.h"
 #include "TextureCache.h"
+#include "Layer.h"
 class IShapeSFML;
 class ISceneBase : public RootScene
 {
@@ -22,6 +23,12 @@ public:
 	void setSceneIdx(int idx);
 
 	int getSceneIdx();
+
+	virtual void AddLayer(Layer* layer) = 0;
+	virtual void RemoveLayer(Layer* layer) = 0;
+	virtual void ClearListLayer() = 0;
+	virtual std::vector<Layer*>& GetListLayer() = 0;
+	const virtual std::vector<Layer*>& GetListLayer() const = 0;
 
 	sf::Time getRefreshTime();
 
@@ -43,4 +50,5 @@ private:
 	int m_Sceneidx;
 	sf::RenderWindow* m_Window;
 	sf::Time m_FefreshTime;
+	
 };
