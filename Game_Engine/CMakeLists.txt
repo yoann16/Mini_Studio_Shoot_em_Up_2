@@ -1,6 +1,6 @@
 # Trouver tous les fichiers source et header
-file(GLOB_RECURSE GAME_ENGINE_HEADER_FILES "${CMAKE_SOURCE_DIR}/Game_Engine/include/*.h")
-file(GLOB_RECURSE GAME_ENGINE_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Game_Engine/src/*.cpp")
+file(GLOB_RECURSE GAME_ENGINE_HEADER_FILES CONFIGURE_DEPENDS  "${CMAKE_SOURCE_DIR}/Game_Engine/include/*.h")
+file(GLOB_RECURSE GAME_ENGINE_SOURCE_FILES CONFIGURE_DEPENDS  "${CMAKE_SOURCE_DIR}/Game_Engine/src/*.cpp")
 
 # Créer la bibliothèque Game_Engine
 add_library(Game_Engine ${GAME_ENGINE_SOURCE_FILES} ${GAME_ENGINE_HEADER_FILES})

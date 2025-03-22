@@ -1,6 +1,6 @@
 # Trouver tous les fichiers source et header
-file(GLOB_RECURSE GAME_HEADER_FILES "${CMAKE_SOURCE_DIR}/Game/include/*.h")
-file(GLOB_RECURSE GAME_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Game/src/*.cpp")
+file(GLOB_RECURSE GAME_HEADER_FILES CONFIGURE_DEPENDS  "${CMAKE_SOURCE_DIR}/Game/include/*.h")
+file(GLOB_RECURSE GAME_SOURCE_FILES CONFIGURE_DEPENDS  "${CMAKE_SOURCE_DIR}/Game/src/*.cpp")
 
 # Créer la bibliothèque Game
 add_library(Game ${GAME_SOURCE_FILES} ${GAME_HEADER_FILES})

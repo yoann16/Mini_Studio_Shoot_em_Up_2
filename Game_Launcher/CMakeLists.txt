@@ -1,5 +1,5 @@
 # Trouver tous les fichiers source
-file(GLOB_RECURSE LAUNCHER_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Game_Launcher/src/*.cpp")
+file(GLOB_RECURSE LAUNCHER_SOURCE_FILES CONFIGURE_DEPENDS  "${CMAKE_SOURCE_DIR}/Game_Launcher/src/*.cpp")
 
 # Créer l'exécutable
 add_executable(Game_Launcher ${LAUNCHER_SOURCE_FILES})
