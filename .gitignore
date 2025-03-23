@@ -1,12 +1,12 @@
 # Dossiers à exclure
 build/
-vcpkg/
 cmake/
 
 # Fichiers spécifiques au projet
 Document/Diagramme UML/*.txt
 Document/S2 - UE4 - Gestion de projet-20250308T194006Z-001.zip
 external/SFML-2.6.2
+external/json
 Game/include/BehaviorTree.h
 Game/include/Boss.h
 Game/include/BossBehavior.h
@@ -19,4 +19,8 @@ Game/src/ISpawner.cpp
 Game/src/BossBullet.cpp
 Game/src/BossBehavior.cpp
 Game/src/Boss.cpp
-setup_struct.bat
+scripts/*.txt
+scripts/setup_struct.bat
+
+
+

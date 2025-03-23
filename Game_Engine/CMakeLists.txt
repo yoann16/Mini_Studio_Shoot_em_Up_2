@@ -9,14 +9,20 @@ add_library(Game_Engine ${GAME_ENGINE_SOURCE_FILES} ${GAME_ENGINE_HEADER_FILES})
 target_include_directories(Game_Engine PUBLIC 
     ${CMAKE_SOURCE_DIR}/Game_Engine/include
     ${SFML_INCLUDE_DIR}
+    # ${IMGUI_DIR}
+    # ${IMGUI_SFML_DIR}
+    ${CMAKE_SOURCE_DIR}/external/json/include
 )
 
-# Lier SFML et KT_Library
+# Lier SFML, ImGui, ImGui-SFML et KT_Library
 target_link_libraries(Game_Engine PUBLIC 
     sfml-graphics
     sfml-window
     sfml-system
-    KT_Library  
+    KT_Library
+    # ImGui
+    # ImGui-SFML::ImGui-SFML
+    nlohmann_json::nlohmann_json
 )
 
 # Organiser dans Visual Studio

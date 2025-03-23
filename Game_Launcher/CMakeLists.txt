@@ -9,6 +9,9 @@ target_include_directories(Game_Launcher PUBLIC
     ${CMAKE_SOURCE_DIR}/Game_Engine/include
     ${CMAKE_SOURCE_DIR}/Game/include
     ${SFML_INCLUDE_DIR}
+    # ${IMGUI_DIR}
+    # ${IMGUI_SFML_DIR}
+    ${CMAKE_SOURCE_DIR}/external/json/include
 )
 
 # Lier les bibliothèques et SFML
@@ -18,6 +21,9 @@ target_link_libraries(Game_Launcher PUBLIC
     sfml-graphics
     sfml-window
     sfml-system
+    # ImGui
+    # ImGui-SFML::ImGui-SFML
+    nlohmann_json::nlohmann_json
 )
 
 # Organiser dans Visual Studio
@@ -31,6 +37,7 @@ add_custom_command(TARGET Game_Launcher POST_BUILD
     $<TARGET_FILE_DIR:Game_Launcher>
     COMMENT "Copie des DLL SFML vers le dossier de l'exécutable"
 )
+
 set(RESOURCES_DIR "${CMAKE_SOURCE_DIR}/Ressources" CACHE PATH "Resources directory")
 
 add_custom_command(TARGET Game_Launcher POST_BUILD

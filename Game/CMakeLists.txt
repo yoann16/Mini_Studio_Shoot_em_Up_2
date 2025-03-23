@@ -10,14 +10,19 @@ target_include_directories(Game PUBLIC
     ${CMAKE_SOURCE_DIR}/Game_Engine/include
     ${CMAKE_SOURCE_DIR}/Game/include
     ${SFML_INCLUDE_DIR}
+    # ${IMGUI_DIR}
+    # ${IMGUI_SFML_DIR}
+    ${CMAKE_SOURCE_DIR}/external/json/include
 )
-
 
 target_link_libraries(Game PUBLIC 
     Game_Engine
     sfml-graphics
     sfml-window
     sfml-system
+    # ImGui
+    # ImGui-SFML::ImGui-SFML
+    nlohmann_json::nlohmann_json
 )
 
 # Organiser dans Visual Studio
