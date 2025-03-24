@@ -1,16 +1,20 @@
-  #include "SceneManager.h"
-  #include "SFML/Graphics.hpp"
-  #include "Game.h"
-  //#include <GameObject.h>
-  #include <iostream>
-  //TODO
-  int main(int argc, char** argv) 
-  {
-      SceneManager a(argv[0], 1920, 1080, "const std::string & title"/*,sf::Style::Fullscreen*/);
-      a.AddScene(new Game(a.getWindow(),240,a.geTextureCash()));
-      a.Exe();
-    
-  }
+#include <iostream>
+#include <memory>
+#include "SceneManager.h"
+#include "Game.h"
+
+
+//#include "SFML/Graphics.hpp"
+//#include <GameObject.h>
+  
+int main(int argc, char** argv) 
+{
+    std::unique_ptr<Root> root = std::make_unique< Root>();
+    SceneManager manager(root.get(), argv[0], 1920, 1080, "Cursed Kingdom"/*,sf::Style::Fullscreen*/);
+    manager.AddScene(new Game(manager.getWindow(),240, manager.getTextureCash()));
+    manager.Exe();
+    return 0;
+}
 
  //#include <nlohmann/json.hpp>
  //#include <iostream>

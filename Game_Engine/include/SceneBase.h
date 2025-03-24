@@ -1,12 +1,11 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
-#include "IGameObject.h"
-#include "IShape.h"
+//#include <SFML/Graphics.hpp>
+//#include <SFML/System.hpp>
+#include "Composite.h"
 #include "TextureCache.h"
 #include "Layer.h"
-class IShapeSFML;
-class ISceneBase : public RootScene
+
+class ISceneBase : public IComposite
 {
 public:
 
@@ -34,17 +33,17 @@ public:
 
 	sf::RenderWindow* getWindow();
 
-	sf::Vector2f getBackgroundCenter();
+	/*sf::Vector2f getBackgroundCenter();
 	sf::Vector2f getBackgroundSize();
 	sf::Vector2f getLeftTopCorner();
 	sf::Vector2f getRightBotomCorner();
-	sf::Vector2f GetCenterWindow();
+	sf::Vector2f GetCenterWindow();*/
 	TextureCache* getTexture() { return m_texture; }
 
 
 
 protected:
-	IShapeSFML* m_Background;
+	//IShapeSFML* m_Background;
 	TextureCache* m_texture;
 private:
 	int m_Sceneidx;
