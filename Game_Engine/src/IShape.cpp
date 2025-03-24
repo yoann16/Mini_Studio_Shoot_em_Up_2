@@ -1,75 +1,20 @@
 #include "IShape.h"
 
-AnimateSprite::AnimateSprite(std::initializer_list<std::string> init) : m_curentTexture(0)
+AABB::AABB(sf::Vector2f Amin_, sf::Vector2f Amax)
+	: Amin(Amin_)
+	, Amax(Amax)
 {
-	for (auto& idx : init)
-	{
-		m_textureContainer.pushBack(idx);
-	}
 }
 
-void AnimateSprite::add(std::string toBeAdded)
+
+float convertRadToDeg(const float& rad)
 {
-	m_textureContainer.pushBack(toBeAdded);
+	return (180 * rad) / 3.14159f;
 }
 
-std::string AnimateSprite::getPath(const std::string& check)
+float convertDegToRad(const float& deg)
 {
-	if (m_textureContainer.Empty())
-		throw std::out_of_range("Vector is empty");
-	for (auto& idx : m_textureContainer)
-	{
-		if (idx == check)
-			return idx;
-	}
-	throw std::runtime_error("Impossible to find path");
-}
-
-std::string AnimateSprite::getPath(const int& idx)
-{
-	if (m_textureContainer.Empty())
-		throw std::out_of_range("Vector is empty");
-	if (idx >= m_textureContainer.Size())
-		throw std::out_of_range("Out of range");
-	return m_textureContainer[idx];
-}
-
-std::string AnimateSprite::getCurrentPath()
-{
-	return m_textureContainer[m_curentTexture];
-}
-
-void AnimateSprite::resetTexture()
-{
-	m_textureContainer.clear();
-	m_curentTexture = 0;
-}
-
-void AnimateSprite::ChangeToNextPath()
-{
-	if (m_textureContainer.Empty())
-		throw std::out_of_range("Vector is empty");
-	if (m_curentTexture == m_textureContainer.Size() - 1)
-		m_curentTexture = 0;
-	else
-		++m_curentTexture;
-}
-
-void AnimateSprite::ChangePath(const int& idx)
-{
-	if (idx < 0 || idx >= m_textureContainer.Size())
-		throw std::runtime_error("Out of range");
-	m_curentTexture = idx;
-}
-
-void AnimateSprite::ChangeToPreviousPath()
-{
-	if (m_textureContainer.Empty())
-		throw std::out_of_range("Vector is empty");
-	if (m_curentTexture == 0)
-		m_curentTexture = m_textureContainer.Size() - 1;
-	else
-		--m_curentTexture;
+	return (deg * 3.14159f) / 180;
 }
 
 RectangleSFML::RectangleSFML(float width, float height, sf::Vector2f position, sf::Vector2f Origin) :m_shape(sf::Vector2f(width, height))
@@ -84,11 +29,7 @@ RectangleSFML::RectangleSFML(float width, float heignt, sf::Vector2f position) :
 	m_shape.setOrigin(m_shape.getSize().x / 2, m_shape.getSize().y / 2);
 }
 
-RectangleSFML::RectangleSFML(float width, float heignt, ISceneBase* scene) :m_shape(sf::Vector2f(width, heignt))
-{
-	m_shape.setPosition(scene->getWindow()->getSize().x / 2, scene->getWindow()->getSize().y / 2);
-	m_shape.setOrigin(m_shape.getSize().x / 2, m_shape.getSize().y / 2);
-}
+
 
 sf::Shape& RectangleSFML::getShape()
 {
@@ -174,12 +115,6 @@ SquareSFML::SquareSFML(float size, sf::Vector2f position) :RectangleSFML(size, s
 	m_shape.setOrigin(m_shape.getSize().x / 2, m_shape.getSize().y / 2);
 }
 
-SquareSFML::SquareSFML(float size, ISceneBase* scene) :RectangleSFML(size, size, scene)
-{
-	m_shape.setPosition(scene->getWindow()->getSize().x / 2, scene->getWindow()->getSize().y / 2);
-	m_shape.setOrigin(m_shape.getSize().x / 2, m_shape.getSize().y / 2);
-}
-
 sf::Shape& SquareSFML::getShape()
 {
 	return static_cast<sf::Shape&>(m_shape);
@@ -194,12 +129,6 @@ CircleSFML::CircleSFML(float r, sf::Vector2f position, sf::Vector2f Origin) :m_s
 CircleSFML::CircleSFML(float r, sf::Vector2f position) :m_shape(r)
 {
 	m_shape.setPosition(position);
-	m_shape.setOrigin(m_shape.getRadius(), m_shape.getRadius());
-}
-
-CircleSFML::CircleSFML(float r, ISceneBase* scene) :m_shape(r)
-{
-	m_shape.setPosition(scene->getWindow()->getSize().x / 2, scene->getWindow()->getSize().y / 2);
 	m_shape.setOrigin(m_shape.getRadius(), m_shape.getRadius());
 }
 

@@ -27,4 +27,31 @@ private:
 	std::string m_execFilePath;
 };
 
+class AnimateSprite
+{
+public:
+	AnimateSprite(std::initializer_list<std::string> init);
+
+	void add(std::string toBeAdded);
+
+	std::string getPath(const std::string& check);
+
+	std::string getPath(const int& idx);
+
+	std::string getCurrentPath();
+
+	void resetTexture();
+
+	void ChangeToNextPath();
+
+	void ChangeToPreviousPath();
+
+	void ChangePath(const int& idx);
+
+
+private:
+	KT::Vector<std::string> m_textureContainer;
+	int m_curentTexture;
+};
+
 
