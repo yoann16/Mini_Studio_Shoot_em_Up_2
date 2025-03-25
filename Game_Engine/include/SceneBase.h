@@ -1,9 +1,8 @@
 #pragma once
-//#include <SFML/Graphics.hpp>
-//#include <SFML/System.hpp>
 #include "Composite.h"
 #include "TextureCache.h"
 #include "Layer.h"
+#include<iostream>
 
 class ISceneBase : public IComposite
 {
@@ -23,11 +22,14 @@ public:
 
 	int getSceneIdx();
 
-	virtual void AddLayer(Layer* layer) = 0;
-	virtual void RemoveLayer(Layer* layer) = 0;
-	virtual void ClearListLayer() = 0;
-	virtual std::vector<Layer*>& GetListLayer() = 0;
-	const virtual std::vector<Layer*>& GetListLayer() const = 0;
+	void AddLayer(Layer* layer);
+	void RemoveLayer(Layer* layer);
+	void ClearListLayer();
+
+	std::vector<Layer*>& GetListLayer();
+	const  std::vector<Layer*>& GetListLayer() const;
+
+	Layer* GetLayerByType(LayersType type);
 
 	sf::Time getRefreshTime();
 
@@ -49,5 +51,7 @@ private:
 	int m_Sceneidx;
 	sf::RenderWindow* m_Window;
 	sf::Time m_FefreshTime;
+	std::vector<Layer*> m_layer;
+	//bool m_needSort;
 	
 };
