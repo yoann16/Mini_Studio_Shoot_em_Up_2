@@ -1,5 +1,13 @@
 #pragma once
-#include "IGameObject.h"
+
+
+class ISceneBase;
+class IGameObject;
+class Reader_GameObjectType;
+
+#include <vector>
+#include <SFML/Graphics.hpp>
+#include "Composite.h"
 
 enum class LayersType
 {
@@ -8,16 +16,19 @@ enum class LayersType
 	,Foreground
 };
 
+
+
 class Layer :public IComposite
 {
 public:
-	Layer(IComposite* scene, LayersType type, const int& zPosition);
+	Layer(LayersType type, const int& zPosition);
 	virtual ~Layer();
 
 	
-	void Update(const float& deltatime) override;
-	void ProcessInput(const sf::Event& event) override;
-	void Render() override;
+	void Update(const float& deltatime);
+	void ProcessInput(const sf::Event& event);
+	void Render();
+
 
 	
 	void SetVisible(bool visible);
@@ -41,7 +52,6 @@ public:
 	void SortByY();
 	
 private:
-	//ISceneBase* m_scene;
 	LayersType m_type;
 	int m_zPosition;
 	bool m_isVisible;

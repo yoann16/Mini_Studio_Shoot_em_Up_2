@@ -54,29 +54,10 @@ const Root* IComponent::getRoot() const
 }
 
 IComposite::IComposite(IComposite* parent) 
-	: IComponent(parent)
+	: IComponent(nullptr)
 {
 
 }
-//void IComposite::Update(const float& deltatime)
-//{
-//	for (auto& child : m_children)
-//		child->Update(deltatime);
-//}
-//
-//void IComposite::ProcessInput(const sf::Event& event)
-//{
-//	for (auto& child : m_children)
-//		child->ProcessInput(event);
-//}
-//
-//
-//void IComposite::Render()
-//{
-//	for (auto& child : m_children)
-//		child->Render();
-//}
-
 
 IComposite::~IComposite()
 {
@@ -110,25 +91,6 @@ void IComposite::remove(IComponent* data)
 		throw;
 	m_children.erase(it);
 }
-
-//std::vector<IComponent*> IComposite::getFullTree()
-//{
-//	std::vector<IComponent*> Result;
-//	AddFullTree(Result, getChildren());
-//	return Result;
-//}
-//
-//void IComposite::AddFullTree(std::vector<IComponent*>& toAdd, std::vector<IComponent*> iterate)
-//{
-//	for (auto it : iterate)
-//	{
-//		toAdd.push_back(it);
-//		if (it->GetComponentType() == Component::IComposite)
-//		{
-//			AddFullTree(toAdd, static_cast<IComposite*>(it)->getChildren());
-//		}
-//	}
-//}
 
 
 ILeaf::ILeaf(IComposite* parent) 

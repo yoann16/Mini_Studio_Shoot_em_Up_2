@@ -1,5 +1,5 @@
 #include "SceneManager.h"
-//#include <iostream>
+
 /*TODO CREER UNE CLASSE WINDOW
 Severity	Code	Description	Project	File	Line	Suppression State	Details
 Warning	C26495	Variable 'SceneManager::m_event' is uninitialized.

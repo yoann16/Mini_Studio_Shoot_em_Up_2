@@ -1,45 +1,54 @@
 #pragma once
-#include "SceneBase.h"
-#include "GameObject.h"
-#include "Layer.h"
 #include <vector>
 
-//class ISceneBase;
+class ISceneBase;
+class Layer;
 enum class GameState
 {
     playing
     , paused
     , gameover
 };
-class Game : public ISceneBase
+class GameScene : public ISceneBase
 {
 public:
-    Game(sf::RenderWindow* Window, const float& framerate, TextureCache* TextureManager);
-    virtual~Game();
-    void ProcessInput(const sf::Event& event) override;
-    void Update(const float& deltatime) override;
-    void Render() override;
-    void AddLayer(Layer* layer) override{}
-    void RemoveLayer(Layer* layer) override{}
-    void ClearListLayer() override{}
-    std::vector<Layer*>& GetListLayer() override { return m_layer; }
-    const std::vector<Layer*>& GetListLayer() const override { return m_layer; }
+    GameScene(sf::RenderWindow* Window, const float& framerate, TextureCache* TextureManager)
+        :ISceneBase(Window, framerate, TextureManager)
+    {
+        m_backgroundLayer = new Layer(LayersType::Background, 0);
+        m_middleLayer = new Layer(LayersType::Middleground, 1);
+        m_foregroundLayer = new Layer(LayersType::Foreground, 2);
 
+        AddLayer(m_backgroundLayer);
+        AddLayer(m_middleLayer);
+        AddLayer(m_foregroundLayer);
+    }
+
+    ~GameScene()
+    {
+        ClearListLayer();
+    }
+
+    void Update(const float& deltatime) override
+    {
+        m_backgroundLayer->Update(deltatime);
+        m_middleLayer->Update(deltatime);
+        m_foregroundLayer->Update(deltatime);
+    }
+    void ProcessInput(const sf::Event& event)override
+    {
+        m_backgroundLayer->ProcessInput(event);
+        m_middleLayer->ProcessInput(event);
+        m_foregroundLayer->ProcessInput(event);
+    }
+    void Render()override
+    {
+        m_backgroundLayer->Render();
+        m_middleLayer->Render();
+        m_foregroundLayer->Render();
+    }
 private:
-    GameState m_gameState;
     Layer* m_backgroundLayer;
-    Layer* m_middlegroundLayer;
+    Layer* m_middleLayer;
     Layer* m_foregroundLayer;
-    std::vector<Layer*> m_layer;
-    Player* m_player;
-    Terrain* m_terrain;
-    TreeTrunk* m_treetrunk;
-    ZombieSeed* m_zombie;
-    /*PhysicsSystem& m_physics;
-    std::vector<Platform> m_platforms;
-    std::vector<Enemy> m_enemies;
-    std::vector<Collectible> m_collectibles;
-    Camera m_camera;
-    int m_score;*/
-    
 };

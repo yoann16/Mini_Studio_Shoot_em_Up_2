@@ -10,12 +10,6 @@ ISceneBase::ISceneBase(sf::RenderWindow* window, const float& framerate, Texture
 {
 }
 
-ISceneBase::~ISceneBase()
-{
-	ClearListLayer();
-}
-
-
 void ISceneBase::setSceneIdx(int idx)
 {
 	m_Sceneidx = idx;
@@ -109,37 +103,3 @@ Layer* ISceneBase::GetLayerByType(LayersType type)
 	}
 	return nullptr;
 }
-
-//sf::Vector2f ISceneBase::getBackgroundCenter()
-//{
-//	return m_Background->getPosition();
-//}
-//
-//sf::Vector2f ISceneBase::getBackgroundSize()
-//{
-//	return m_Background->getSize();
-//}
-//
-//sf::Vector2f ISceneBase::getLeftTopCorner()
-//{
-//	sf::Vector2f result;
-//	result.x =( m_Background->getPosition().x -( m_Background->getSize().x / 2));
-//	result.y = (m_Background->getPosition().y -( m_Background->getSize().y / 2));
-//	return result;
-//}
-//
-//sf::Vector2f ISceneBase::getRightBotomCorner()
-//{
-//	sf::Vector2f result;
-//	result.x = (m_Background->getPosition().x + (m_Background->getSize().x / 2));
-//	result.y = (m_Background->getPosition().y + (m_Background->getSize().y / 2));
-//	return result;
-//}
-//
-//sf::Vector2f ISceneBase::GetCenterWindow()
-//{
-//	sf::Vector2f centreFenetre = getWindow()->getView().getCenter();
-//	sf::Vector2f centreBackground = m_Background->getPosition();
-//	sf::Vector2f positionRelative = centreFenetre - centreBackground;
-//	return positionRelative;
-//}
