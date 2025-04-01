@@ -18,7 +18,7 @@ class SceneManager : public IComposite
 public:
 
 	SceneManager(Root* root, const std::string& execFilePath, const unsigned int& width, const unsigned int& height,
-				const std::string& title, const sfStyle& style = sf::Style::None);
+				const std::string& title, const sfStyle& style = sf::Style::Default);
 
 	~SceneManager();
 	void Exe();

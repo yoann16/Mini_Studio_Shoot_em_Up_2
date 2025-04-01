@@ -9,7 +9,7 @@ enum class GameObjectType : uint32_t
 	,Destructibility = 0b0010  // 1=Destructible, 0=Indestructible
 	,Component		 = 0b0100  // 1=Container, 0=Leaf
 	,Hitbox			 = 0b1000  // 1=Has hitbox, 0=No hitbox
-};
+}; 
 
 
 inline GameObjectType operator | (GameObjectType lhs, GameObjectType rhs);
@@ -79,3 +79,6 @@ sf::Vector2f TheClassName::getInitPosition() const { return InitPosition; } \
 ::LayersType TheClassName::getLayersType() const { return layer; } \
 uint32_t TheClassName::getGameObjectType() const { return TypeGameObject; } \
 sf::Vector2f TheClassName::getCurrentPosition() const { return m_currentPosition; } 
+
+
+

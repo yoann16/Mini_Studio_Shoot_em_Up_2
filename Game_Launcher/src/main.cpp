@@ -7,7 +7,7 @@
 int main(int argc, char** argv) 
 {
     std::unique_ptr<Root> root = std::make_unique< Root>();
-    SceneManager manager(root.get(), argv[0], 1920, 1080, "Cursed Kingdom"/*,sf::Style::Fullscreen*/);
+    SceneManager manager(root.get(), argv[0], 800, 600, "Cursed Kingdom"/*,sf::Style::Fullscreen*/);
     manager.AddScene(new GameScene(manager.getWindow(),240, manager.getTextureCash()));
     manager.Exe();
     return 0;
