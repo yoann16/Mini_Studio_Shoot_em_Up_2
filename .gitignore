@@ -1,25 +1,26 @@
-# Dossier de build
+# Dossiers à exclure
 build/
-**/build/
+cmake/
 
-# SFML
+# Fichiers spécifiques au projet
+Document/Diagramme UML/*.txt
+Document/S2 - UE4 - Gestion de projet-20250308T194006Z-001.zip
 external/SFML-2.6.2
+external/json
+Game/include/BehaviorTree.h
+Game/include/Boss.h
+Game/include/BossBehavior.h
+Game/include/BossBullet.h
+Game/include/ISpawner.h
+Game/include/Ship.h
+Game/src/BehaviorTree.cpp
+Game/src/Ship.cpp
+Game/src/ISpawner.cpp
+Game/src/BossBullet.cpp
+Game/src/BossBehavior.cpp
+Game/src/Boss.cpp
+scripts/*.txt
+scripts/setup_struct.bat
 
-# Fichier spécifique
-setup_struct.bat
 
-# Autres fichiers courants à ignorer
-.vs/
-.vscode/
-.idea/
-*.user
-*.suo
-*.userprefs
-*.sln.docstates
-*.obj
-*.exe
-*.pdb
-*.dll
-*.ilk
-*.log
-*.tlog
+

@@ -1,6 +1,7 @@
 #pragma once
 #include "KT_Vector.h"
 #include <string>
+#include <SFML/Graphics.hpp>
 
 namespace sf { class Texture; }
 
@@ -26,5 +27,7 @@ private:
 	KT::Vector<TextureInfo> m_allTextureInfos;
 	std::string m_execFilePath;
 };
+
+
 
 

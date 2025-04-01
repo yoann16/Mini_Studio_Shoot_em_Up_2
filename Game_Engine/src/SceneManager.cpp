@@ -1,12 +1,20 @@
 #include "SceneManager.h"
-#include "SceneBase.h"
-#include <iostream>
 
-SceneManager::SceneManager(const std::string& execFilePath,const size_t& width, const size_t& height, const std::string& title, const sfStyle& style) :
-m_window(new sf::RenderWindow(sf::VideoMode(width, height)
-	, title, style))
-, m_currentScene(nullptr)
-,m_texture(new TextureCache(execFilePath))
+/*TODO CREER UNE CLASSE WINDOW
+Severity	Code	Description	Project	File	Line	Suppression State	Details
+Warning	C26495	Variable 'SceneManager::m_event' is uninitialized.
+Always initialize a member variable(type.6).Game_Engine	
+E : \Projet_et_Etude\GamingCampus\ent\Mini_Studio_Shoot_Em_Up\Mini_Studio_Shoot_em_Up_2\Game_Engine\src\SceneManager.cpp 4*/
+
+
+SceneManager::SceneManager(Root* root, const std::string& execFilePath,const unsigned int& width, const unsigned int& height,
+						   const std::string& title, const sfStyle& style) 
+	:IComposite(root)
+	,m_window(new sf::RenderWindow(sf::VideoMode(width, height),title,style))
+	,m_currentScene(nullptr)
+	,m_texture(new TextureCache(execFilePath))
+	,m_scene()
+	
 {}
 
 SceneManager::~SceneManager()
@@ -14,7 +22,7 @@ SceneManager::~SceneManager()
 	delete m_window;
 	m_window = nullptr;
 
-	for (std::make_signed_t<size_t> idx = m_scene.Size() - 1 ; idx >= 0; --idx)
+	for (std::make_signed_t<size_t> idx = m_scene.size() - 1 ; idx >= 0; --idx)
 	{
 		delete m_scene[idx];
 		m_scene[idx] = nullptr;
@@ -29,13 +37,13 @@ void SceneManager::Exe()
 {
 	const sf::Clock clock;
 	const sf::Clock spawnClock;
-	float previous = clock.getElapsedTime().asMilliseconds();
+	float previous = static_cast<float>(clock.getElapsedTime().asMilliseconds());
 	auto lag = 0.0;
 	int frameCount = 0;
 	while (m_window->isOpen())
 	{
 		frameCount++;
-		const float current = clock.getElapsedTime().asMilliseconds();
+		const float current = static_cast<const float>(clock.getElapsedTime().asMilliseconds());
 		const float maxElapsed = 250.0f;
 		const auto elapsed = current - previous;
 		float cappedElapsed = (elapsed > maxElapsed) ? maxElapsed : elapsed;
@@ -60,7 +68,7 @@ void SceneManager::Exe()
 		if (m_window->hasFocus())
 		{
 			sf::Vector2i mousePos = sf::Mouse::getPosition(*m_window);
-			if (mousePos.x >= 0 && mousePos.x < m_window->getSize().x && mousePos.y >= 0 && mousePos.y < m_window->getSize().y)
+			if (mousePos.x >= 0 && mousePos.x < static_cast<int>(m_window->getSize().x) && mousePos.y >= 0 && mousePos.y < static_cast<int>(m_window->getSize().y))
 			{
 				//m_currentScene->ProcessInput(m_event);
 			}
@@ -83,9 +91,10 @@ void SceneManager::Exe()
 
 void SceneManager::AddScene(ISceneBase* scene)
 {
-	m_scene.pushBack(scene);
-	m_scene.back()->setSceneIdx(m_scene.Size() - 1);
-	if (m_scene.Size() == 1)
+	m_scene.push_back(scene);
+	scene->setParent(this);
+	m_scene.back()->setSceneIdx(static_cast<int>(m_scene.size() - 1));
+	if (m_scene.size() == 1)
 	{
 		SetScene(0);
 	}
@@ -102,7 +111,7 @@ sf::RenderWindow* SceneManager::getWindow()
 	return m_window; 
 }
 
-TextureCache* SceneManager::geTextureCash()
+TextureCache* SceneManager::getTextureCash()
 {
 	return m_texture;
 }

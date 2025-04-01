@@ -1,229 +1,57 @@
 #include "IGameObject.h"
-#include "SceneBase.h"
-#include "IShape.h"
-#include <iostream>
 
-AABB::AABB(sf::Vector2f Amin_, sf::Vector2f Amax) : Amin(Amin_), Amax(Amax) {}
-
-
-float convertRadToDeg(const float& rad)
+inline GameObjectType operator | (GameObjectType lhs, GameObjectType rhs)
 {
-	return (180 * rad) / 3.14159f;
+	return static_cast<GameObjectType>(static_cast<uint32_t>(lhs) | static_cast<uint32_t>(rhs));
+}
+inline GameObjectType operator & (GameObjectType lhs, GameObjectType rhs)
+{
+	return static_cast<GameObjectType>(static_cast<uint32_t>(lhs) & static_cast<uint32_t>(rhs));
+}
+inline GameObjectType operator ^ (GameObjectType lhs, GameObjectType rhs)
+{
+	return static_cast<GameObjectType>(static_cast<uint32_t>(lhs) ^ static_cast<uint32_t>(rhs));
+}
+inline GameObjectType operator ~ (GameObjectType value)
+{
+	return static_cast<GameObjectType>(~static_cast<uint32_t>(value));
 }
 
-float convertDegToRad(const float& deg)
+bool Reader_GameObjectType::hasHitbox() const
 {
-	return (deg * 3.14159f) / 180;
+	return (m_rawValue & static_cast<uint32_t>(GameObjectType::Hitbox)) != 0;
 }
 
-IGameObject::IGameObject(IComposite* scene):m_scene(scene),m_needDestroy(false)
+bool Reader_GameObjectType::isVisible() const
 {
-
+	return (m_rawValue & static_cast<uint32_t>(GameObjectType::Visibility)) != 0;
 }
 
-IGameObject::~IGameObject()
+bool Reader_GameObjectType::isContainer() const
 {
-	delete m_shape;
+	return (m_rawValue & static_cast<uint32_t>(GameObjectType::Component)) != 0;
 }
 
-AABB IGameObject::GetBoundingBox()
+bool Reader_GameObjectType::isLeaf() const
 {
-	return m_shape->GetBoundingBox();
+	return !isContainer();
 }
 
-IShapeSFML* IGameObject::getShape()
+bool Reader_GameObjectType::isDestructible() const
 {
-	return m_shape;
-}
-
-bool IGameObject::NeedDestroy()
-{
-	return m_needDestroy;
-}
-
-void IGameObject::destroy()
-{
-	m_needDestroy = true;
+	return (m_rawValue & static_cast<uint32_t>(GameObjectType::Destructibility)) != 0;
 }
 
 
-DestructibleObject::DestructibleObject(IComposite* scene, const float& life) :IGameObject(scene), m_life(life)
-{
+sf::Vector2f IGameObject::getInitPosition() const 
+{ 
+	return m_initialPosition; 
 }
-
-GameObjectType DestructibleObject::globalGameObjectType()
-{
-	return GameObjectType::DestructibleObject;
+sf::Vector2f IGameObject::getCurrentPosition() const 
+{ 
+	return m_currentPosition; 
 }
-
-NonDestructibleObject::NonDestructibleObject(IComposite* scene) :IGameObject(scene)
-{
+float IGameObject::sorting_Y_point() const
+{ 
+	return 0.0f; 
 }
-
-GameObjectType NonDestructibleObject::globalGameObjectType()
-{
-	return GameObjectType::NonDestructibleObject;
-}
-
-
-IComponent::IComponent(IComposite* parent) :m_parent(nullptr)
-{
-	setParent(parent);
-}
-
-IComponent::~IComponent()
-{
-	setParent(nullptr);
-}
-
-IComponent* IComponent::getParent()
-{
-	return m_parent;
-}
-
-const IComponent* IComponent::getParent() const
-{
-	return m_parent;
-}
-
-
-void IComponent::setParent(IComposite* parent)
-{
-	if (m_parent)
-		m_parent->remove(this);
-
-	m_parent = parent;
-
-	if (m_parent)
-		m_parent->add(this);
-}
-
-RootScene* IComponent::getRoot()
-{
-	auto* curent = this;
-	while (curent->getParent() != nullptr)
-	{
-		curent = curent->getParent();
-	}
-	return static_cast<RootScene*>(curent);
-}
-
-const RootScene* IComponent::getRoot() const
-{
-	auto* curent = this;
-	while (curent->getParent() != nullptr)
-	{
-		curent = curent->getParent();
-	}
-	return static_cast<const RootScene*>(curent);
-}
-
-IComposite::IComposite(IComposite* parent) : IComponent(parent)
-{
-
-}
-void IComposite::Update(const float& deltatime)
-{
-	for (auto& child : m_children)
-		child->Update(deltatime);
-}
-
-void IComposite::ProcessInput(const sf::Event& event)
-{
-	for (auto& child : m_children)
-		child->ProcessInput(event);
-}
-
-
-void IComposite::Render()
-{
-	for (auto& child : m_children)
-		child->Render();
-}
-
-
-IComposite::~IComposite()
-{
-	for (std::make_signed_t<size_t> i = m_children.Size() - 1; i >= 0; --i)
-	{
-		delete m_children[i];
-	}
-	m_children.clear();
-}
-
-
-
-KT::Vector<IComponent*> IComposite::getChildren()
-{
-	return m_children;
-}
-
-const KT::Vector<IComponent*> IComposite::getChildren() const
-{
-	return m_children;
-}
-
-//KT::Vector<IComponant*> IComposite::IterateAllComposite()
-//{
-//	KT::Vector<IComponant*> result;
-//	for (auto child : getChildren())
-//	{
-//		m_shildren.pushBack(child);
-//		if (child->GetComponantType() == Componant::IComposite)
-//		{
-//			for (auto childchild : static_cast<IComposite*>(child)->getChildren())
-//			{
-//				
-//			}
-//		}
-//	}
-//}
-
-void IComposite::add(IComponent* data)
-{
-	m_children.pushBack(data);
-}
-
-void IComposite::remove(IComponent* data)
-{
-	auto it = std::find(m_children.begin(), m_children.end(), data);
-	if (it == m_children.end())
-		throw;
-	m_children.erase(it);
-}
-
-RootScene::RootScene(ISceneBase* scene):IComposite(nullptr),m_scene(scene)
-{
-
-}
-
-KT::Vector<IComponent*> IComposite::getFullTree()
-{
-	KT::Vector<IComponent*> Result;
-	AddFullTree(Result, getChildren());
-	return Result;
-}
-
-ISceneBase* RootScene::getScene()
-{
-	return m_scene;
-}
-
-void IComposite::AddFullTree(KT::Vector<IComponent*>& toAdd, KT::Vector<IComponent*> iterate)
-{
-	for (auto it : iterate)
-	{
-		toAdd.pushBack(it);
-		if (it->GetComponentType() == Component::IComposite)
-		{
-			AddFullTree(toAdd, static_cast<IComposite*>(it)->getChildren());
-		}
-	}
-}
-
-
-ILeaf::ILeaf(IComposite* parent) :IComponent(parent)
-{
-}
-
-

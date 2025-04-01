@@ -1,98 +1,94 @@
 #pragma once
-#pragma once
+#include <vector>
+#include "EntityType.h"
+#include "DecorType.h"
 #include "SceneBase.h"
-#include "GameObject.h"
-class ISceneBase;
+
+
+class Layer;
 enum class GameState
 {
     playing
     , paused
     , gameover
 };
-class Game : public ISceneBase
+class GameScene : public ISceneBase
 {
 public:
-    Game(sf::RenderWindow* Window, const float& framerate, TextureCache* TextureManager)
+    GameScene(sf::RenderWindow* Window, const float& framerate, TextureCache* TextureManager)
         :ISceneBase(Window, framerate, TextureManager)
-        , m_gameState(GameState::playing)
+        , m_texture(*TextureManager)
     {
-        sf::Vector2f winSize(getWindow()->getSize().x, getWindow()->getSize().y);
+        m_backgroundLayer = new Layer(LayersType::Background, 0);
+        m_middleLayer = new Layer(LayersType::Middleground, 1);
+        m_foregroundLayer = new Layer(LayersType::Foreground, 2);
+        const sf::Vector2f windowCenter = sf::Vector2f(
+            Window->getSize().x / 2.0f,
+            Window->getSize().y / 2.0f
+        );
+        //m_player = new Player(windowCenter, m_texture);
+        m_decor = new Bush(Decor::Bush::PinkSmall, windowCenter, m_texture);
 
-        m_Background = new RectangleSFML(winSize.x, winSize.y, sf::Vector2f(winSize.x/2, winSize.y/2));
-        m_Background->setTexture(m_texture->getTexture("j.png"));
-        m_Background->getShape().setScale(1.0f, 1.0f);
+        AddLayer(m_backgroundLayer);
+        AddLayer(m_middleLayer);
+        AddLayer(m_foregroundLayer);
 
-        sf::Vector2f initialPosition = GetCenterWindow();
-        m_player = new Player(this, 10.0f, initialPosition);
-        
+        m_middleLayer->AddGameObject(m_decor);
     }
-    virtual ~Game() = default;
-    void ProcessInput(const sf::Event& event) override
+
+    ~GameScene()
     {
-        if (event.type == sf::Event::KeyPressed)
-        {
-            if (event.key.code == sf::Keyboard::P)
-            {
-                if (m_gameState == GameState::playing)
-                    m_gameState = GameState::paused;
-                else if (m_gameState == GameState::paused)
-                    m_gameState = GameState::playing;
-
-            }
-            
-        }
-        m_player->ProcessInput(event);
-
+        ClearListLayer();
     }
+
     void Update(const float& deltatime) override
     {
-        //std::cout << "GameState: " << static_cast<int>(m_gameState) << std::endl;
-        switch (m_gameState)
-        {
-        case GameState::playing:
-        {
-
-            m_player->Update(deltatime);
-            break;
-
-        }
-        case GameState::paused:
-        {
-
-            //faire un truc
-            break;
-
-        }
-        case GameState::gameover:
-        {
-
-            //faire un truc
-            break;
-
-        }
-        }
-
+        m_backgroundLayer->Update(deltatime);
+        m_middleLayer->Update(deltatime);
+        m_foregroundLayer->Update(deltatime);
     }
-    void Render() override
+    void ProcessInput(const sf::Event& event)override
     {
-        getWindow()->draw(m_Background->getShape());
-        m_player->Render();
-        if (m_gameState == GameState::paused)
-        {
-        }
+        m_backgroundLayer->ProcessInput(event);
+        m_middleLayer->ProcessInput(event);
+        m_foregroundLayer->ProcessInput(event);
     }
+    void Render()override
+    {
+        m_backgroundLayer->Render();
+        m_middleLayer->Render();
+        m_foregroundLayer->Render();
+    }
+    /*void Create_and_AddGameObject_ToLayer(TextureCache& texture)
+    {
+        sf::Vector2f initPosition = { 500.0f,500.0f };
+        m_player = new Player(initPosition);
+        m_middleLayer->AddGameObject(m_player);
+    }*/
+private:
+    Layer* m_backgroundLayer;
+    Layer* m_middleLayer;
+    Layer* m_foregroundLayer;
+    //Player* m_player;
+    Bush* m_decor;
+    TextureCache& m_texture;
+};
+
+class GameObjectFactory
+{
+public:
+    GameObjectFactory(GameScene* scene);
+
+    Player* CreatePlayer(TextureCache& texture, const sf::Vector2f& position);
+    //Enemy* CreateEnemy(TextureCache& texture, const sf::Vector2f& position);
+    //Map*
+    //ZombieSeed*
+    //Tree*
+    //TreeSpawn*
+    //// etc.
 
 private:
-    /*void InitializeLevel();
-    void UpdateCamera();
-    void HandleGameLogic();*/
-private:
-    Player* m_player;
-    /*PhysicsSystem& m_physics;
-    std::vector<Platform> m_platforms;
-    std::vector<Enemy> m_enemies;
-    std::vector<Collectible> m_collectibles;
-    Camera m_camera;
-    int m_score;*/
-    GameState m_gameState;
+    void AddToAppropriateLayer(IGameObject* gameObject);
+
+    GameScene* m_scene;
 };

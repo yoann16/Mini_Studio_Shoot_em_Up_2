@@ -1,0 +1,43 @@
+Voici un guide pour la réorganisation de ton architecture de jeu:
+
+# Guide de Refactorisation de l'Architecture
+
+## 1. Structure des Systèmes Centralisés
+
+### SceneBase contient:
+- **LayerSystem**: Gestion des couches (Background, Middleground, Foreground)
+- **PhysicsSystem**: Détection et résolution des collisions entre GameObjects
+- **InputSystem**: Capture et distribution des événements d'entrée
+
+## 2. Hiérarchie du Pattern Composite
+
+- **IComponent**: Base abstraite pour tous les éléments de la structure
+- **IComposite**: Élément pouvant contenir d'autres éléments
+- **ILeaf**: Élément terminal (sans enfants)
+- **Root → SceneManager → ISceneBase → Layers → GameObjects**
+
+## 3. Cycle de Vie des Objets
+
+- GameObjects s'enregistrent auprès des systèmes au moment de leur création
+- Les Layers contiennent les GameObjects et gèrent leur cycle de vie
+- Quand un GameObject est marqué pour destruction, il:
+  1. Se désenregistre des systèmes
+  2. Est retiré de son Layer parent
+
+## 4. Étapes de Refactorisation
+
+1. Séparer les fichiers:
+   - Pattern Composite (IComponent, IComposite, ILeaf)
+   - GameObjects et dérivés
+   - Systèmes (Physics, Input, Layer)
+
+2. Implémenter chaque système indépendamment:
+   - Interfaces claires
+   - Méthodes d'enregistrement/désenregistrement
+   - Intégration avec la boucle de jeu
+
+3. Modifier les GameObjects pour utiliser ces systèmes:
+   - S'enregistrer/désenregistrer aux systèmes appropriés
+   - Implémenter les interfaces requises (ICollidable, IInputHandler, etc.)
+
+Cette architecture permet une séparation claire des responsabilités tout en maintenant une structure organisée et extensible.

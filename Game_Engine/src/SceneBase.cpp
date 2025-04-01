@@ -1,22 +1,14 @@
 #include "SceneBase.h"
-#include "IGameObject.h"
-#include"IShape.h"
 
-ISceneBase::ISceneBase(sf::RenderWindow* window, const float& framerate, TextureCache* texture) :
-RootScene(this),
-m_Window(window)
-, m_FefreshTime(sf::seconds(1.f /framerate))
-, m_Sceneidx(0)
-,m_Background(nullptr)
-, m_texture(texture)
+ISceneBase::ISceneBase(sf::RenderWindow* window, const float& framerate, TextureCache* texture) 
+	:IComposite(nullptr)
+	,m_Window(window)
+	,m_FefreshTime(sf::seconds(1.f /framerate))
+	,m_Sceneidx(0)
+	,m_texture(texture)
+	,m_layer()
 {
 }
-
-ISceneBase::~ISceneBase()
-{
-	delete m_Background;
-}
-
 
 void ISceneBase::setSceneIdx(int idx)
 {
@@ -38,36 +30,76 @@ sf::RenderWindow* ISceneBase::getWindow()
 	return m_Window;
 }
 
-sf::Vector2f ISceneBase::getBackgroundCenter()
+void ISceneBase::AddLayer(Layer* layer)
 {
-	return m_Background->getPosition();
-}
+	if (layer == nullptr)
+	{
+		std::cerr << "Warning: Attempt to add null Layer to Scene" << std::endl;
+		return;
+	}
 
-sf::Vector2f ISceneBase::getBackgroundSize()
-{
-	return m_Background->getSize();
-}
+	auto it = std::find(m_layer.begin(), m_layer.end(), layer);
+	if (it != m_layer.end())
+		throw std::logic_error("You cannot add 2x the same Layer in the vector");
 
-sf::Vector2f ISceneBase::getLeftTopCorner()
-{
-	sf::Vector2f result;
-	result.x =( m_Background->getPosition().x -( m_Background->getSize().x / 2));
-	result.y = (m_Background->getPosition().y -( m_Background->getSize().y / 2));
-	return result;
-}
+	m_layer.push_back(layer);
+	layer->setParent(this);
 
-sf::Vector2f ISceneBase::getRightBotomCorner()
-{
-	sf::Vector2f result;
-	result.x = (m_Background->getPosition().x + (m_Background->getSize().x / 2));
-	result.y = (m_Background->getPosition().y + (m_Background->getSize().y / 2));
-	return result;
+	/*TODO Changer le tri pour utiliser un tri plus générique
+	pour les GameObject et les Layer(tri trop puissant pour 2-3 Layer)*/
+	std::sort(m_layer.begin(), m_layer.end(),
+		[](const Layer* a, const Layer* b)-> bool
+		{
+			return a->GetzPosition() < b->GetzPosition();
+		}
+	);
 }
-
-sf::Vector2f ISceneBase::GetCenterWindow()
+void ISceneBase::RemoveLayer(Layer* layer)
 {
-	sf::Vector2f centreFenetre = getWindow()->getView().getCenter();
-	sf::Vector2f centreBackground = m_Background->getPosition();
-	sf::Vector2f positionRelative = centreFenetre - centreBackground;
-	return positionRelative;
+	if (layer == nullptr)
+	{
+		std::cerr << "Warning: Attempt to remove null Layer to Scene" << std::endl;
+		return;
+	}
+
+	auto it = std::find(m_layer.begin(), m_layer.end(), layer);
+	if (it == m_layer.end())
+		throw std::logic_error("You can't delete a Layer that isn't in the vector");
+	else
+	{
+		m_layer.erase(it);
+		layer->setParent(nullptr);
+	}
+
+	/*TODO Changer le tri pour utiliser un tri plus générique
+	pour les GameObject et les Layer(tri trop puissant pour 2-3 Layer)*/
+	std::sort(m_layer.begin(), m_layer.end(),
+		[](const Layer* a, const Layer* b)-> bool
+		{
+			return a->GetzPosition() < b->GetzPosition();
+		}
+	);
+}
+void ISceneBase::ClearListLayer()
+{
+	for (auto it = m_layer.rbegin(); it != m_layer.rend(); ++it)
+		delete* it;
+	m_layer.clear();
+}
+std::vector<Layer*>& ISceneBase::GetListLayer()
+{
+	return m_layer;
+}
+const  std::vector<Layer*>& ISceneBase::GetListLayer() const
+{
+	return m_layer;
+}
+Layer* ISceneBase::GetLayerByType(LayersType type)
+{
+	for (auto it = m_layer.begin(); it != m_layer.end(); ++it)
+	{
+		if ((*it)->GetLayerType() == type)
+			return (*it);
+	}
+	return nullptr;
 }

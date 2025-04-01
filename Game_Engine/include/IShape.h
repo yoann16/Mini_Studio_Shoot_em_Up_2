@@ -1,37 +1,16 @@
 #pragma once
+#include <SFML/Graphics.hpp>
 
-#include "SceneBase.h"
-class IPhysics
+struct AABB
 {
-public:
-	virtual ~IPhysics() = default;
+	AABB(sf::Vector2f Amin_, sf::Vector2f Amax);
+	sf::Vector2f Amin;
+	sf::Vector2f Amax;
 };
-class AnimateSprite
-{
-public:
-	AnimateSprite(std::initializer_list<std::string> init);
-
-	void add(std::string toBeAdded);
-
-	std::string getPath(const std::string& check);
-
-	std::string getPath(const int& idx);
-
-	std::string getCurrentPath();
-
-	void resetTexture();
-
-	void ChangeToNextPath();
-
-	void ChangeToPreviousPath();
-
-	void ChangePath(const int& idx);
 
 
-private:
-	KT::Vector<std::string> m_textureContainer;
-	int m_curentTexture;
-};
+float convertRadToDeg(const float& rad);
+float convertDegToRad(const float& deg);
 
 class IShapeSFML
 {
@@ -49,6 +28,11 @@ public:
 	virtual sf::Vector2f getCenter() = 0;
 
 	virtual AABB GetBoundingBox() = 0;
+
+	//Débug:
+	virtual void setFillColor(const sf::Color& color) = 0;
+	virtual void setOutlineColor(const sf::Color& color) = 0;
+	virtual void setOutlineThickness(float thickness) = 0;
 };
 class RectangleSFML : public IShapeSFML
 {
@@ -57,7 +41,6 @@ public:
 
 	RectangleSFML(float width, float height, sf::Vector2f position);
 
-	RectangleSFML(float width, float height, ISceneBase* scene);
 
 	sf::Vector2f getPosition() override;
 
@@ -80,6 +63,11 @@ public:
 
 	 AABB GetBoundingBox()override;
 
+	 //Débug:
+	 void setFillColor(const sf::Color& color) override;
+	 void setOutlineColor(const sf::Color& color) override;
+	 void setOutlineThickness(float thickness) override;
+
 protected:
 	sf::RectangleShape m_shape;
 };
@@ -91,8 +79,6 @@ public:
 
 	SquareSFML(float size, sf::Vector2f position);
 
-	SquareSFML(float size, ISceneBase* scene);
-
 	sf::Shape& getShape() override;
 
 };
@@ -103,8 +89,6 @@ public:
 	CircleSFML(float r, sf::Vector2f position, sf::Vector2f Origin);
 
 	CircleSFML(float r, sf::Vector2f position);
-
-	CircleSFML(float r, ISceneBase* scene);
 
 	sf::Vector2f getPosition() override;
 
@@ -130,142 +114,3 @@ protected:
 	sf::CircleShape m_shape;
 };
 
-class Timer
-{
-public:
-	Timer(const float& timer) :m_TotalTimer(timer), m_CurrentTimer(0) ,m_start(true){}
-	bool AutoActionIsReady(const float& framerate)
-	{
-		if (m_CurrentTimer >= m_TotalTimer)
-		{
-			resetTimer();
-			return true;
-		}
-		NextTIck(framerate);
-		return false;
-	}
-	bool ActionIsReady()
-	{
-		if (m_CurrentTimer >= m_TotalTimer)
-			return true;
-		return false;
-	}
-	void resetTimer()
-	{
-		m_CurrentTimer = 0;
-	}
-	void setNewTimer(const float& timer)
-	{
-		m_TotalTimer = timer;
-	}
-	float getTotalTimer()
-	{
-		return m_TotalTimer;
-	}
-	float getCurrentTimer()
-	{
-		return m_CurrentTimer;
-	}
-	void NextTIck(const float& framerate,const float& idx = 1 )
-	{
-		if (!m_start)
-			return ;
-
-		m_CurrentTimer += framerate*idx;
-		if (m_CurrentTimer >= m_TotalTimer)
-			m_CurrentTimer = m_TotalTimer;
-	}
-	void PreviousTick(const float& framerate, const float& idx = 1)
-	{
-		if (!m_start)
-			return;
-		m_CurrentTimer -= framerate*idx;
-		if (m_CurrentTimer <= 0)
-			m_CurrentTimer = 0;
-	}
-	void Start()
-	{
-		m_start = true;
-	}
-	void Stop()
-	{
-		m_start = false;
-	}
-private:
-	float m_TotalTimer;
-	float m_CurrentTimer;
-	bool m_start;
-};
-
-
-
-class Counter
-{
-public:
-	Counter(const float& count , const float& min = std::numeric_limits<float>::min()) :m_TotalCounter(count), m_minimalCounter(min), m_CurrentCounter(0), m_start(true) {}
-	Counter() :m_TotalCounter(std::numeric_limits<float>::max()), m_minimalCounter(std::numeric_limits<float>::min()), m_CurrentCounter(0), m_start(true) {}
-
-	bool AutCounterMax()
-	{
-		if (m_CurrentCounter >= m_TotalCounter)
-		{
-			resetCounter();
-			return true;
-		}
-		NextTIck();
-		return false;
-	}
-	bool CounterMax()
-	{
-		if (m_CurrentCounter >= m_TotalCounter)
-			return true;
-		return false;
-	}
-	void resetCounter()
-	{
-		m_CurrentCounter = 0;
-	}
-	void setNewCounter(const float& max,const float& min)
-	{
-		m_TotalCounter = max;
-		m_minimalCounter = min;
-	}
-	float getTotalCounter()
-	{
-		return m_TotalCounter;
-	}
-	float GetCurrentCounter()
-	{
-		return m_CurrentCounter;
-	}
-	void NextTIck( const float& idx = 1)
-	{
-		if (!m_start)
-			return;
-
-		m_CurrentCounter += idx;
-		if (m_CurrentCounter >= m_TotalCounter)
-			m_CurrentCounter = m_TotalCounter;
-	}
-	void PreviousTick( const float& idx = 1)
-	{
-		if (!m_start)
-			return;
-		m_CurrentCounter -= idx;
-		if (m_CurrentCounter <= m_minimalCounter)
-			m_CurrentCounter = m_minimalCounter;
-	}
-	void Start()
-	{
-		m_start = true;
-	}
-	void Stop()
-	{
-		m_start = false;
-	}
-private:
-	float m_TotalCounter;
-	float m_CurrentCounter;
-	float m_minimalCounter;
-	bool m_start;
-};
